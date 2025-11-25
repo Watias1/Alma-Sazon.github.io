@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Alma y Sazón — Menú Inclusivo</title>
+  <style>
+    :root{
+      --accent:#2b8a78;
+      --accent-2:#165a50;
+      --muted:#666;
+      --bg:#faf9f7;
+      --card:#ffffff;
+      --glass: rgba(255,255,255,0.9);
+      --shadow: 0 6px 18px rgba(20,20,20,0.06);
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:linear-gradient(180deg,var(--bg), #fff);
+      color:#222;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding-bottom:80px;
+    }
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:1rem;
+      padding:14px 20px;
+      background:var(--card);
+      box-shadow:var(--shadow);
+      position:sticky;
+      top:0;
+      z-index:40;
+    }
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px}
+    h1{margin:0;font-size:18px}
+    .sub{color:var(--muted);font-size:13px;margin-top:2px}
+    .controls{display:flex;gap:12px;align-items:center}
+    .search{padding:8px 12px;border-radius:10px;border:1px solid #eee;background:#fafafa}
+    .btn{background:var(--accent);color:white;padding:9px 12px;border-radius:10px;border:0;cursor:pointer;box-shadow: 0 6px 12px rgba(43,138,120,0.18)}
+    .btn.secondary{background:transparent;color:var(--accent);border:1px solid #e6e6e6;box-shadow:none}
+    main{max-width:1200px;margin:20px auto;padding:0 18px}
+    .hero{background:var(--card);padding:20px;border-radius:12px;box-shadow:var(--shadow);display:flex;gap:18px;align-items:center}
+    .hero-left{flex:1}
+    .hero-right{width:260px;text-align:right}
+    .categories{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+    .cat{padding:8px 10px;border-radius:999px;background:#f3f6f5;border:1px solid #eef6f4;color:var(--accent-2);font-weight:600}
+    .grid{display:grid;grid-template-columns:1fr 360px;gap:18px;margin-top:18px}
+    @media (max-width:980px){.grid{grid-template-columns:1fr}}
+    .menu{background:var(--card);padding:18px;border-radius:12px;box-shadow:var(--shadow)}
+    .sidebar{background:var(--card);padding:18px;border-radius:12px;box-shadow:var(--shadow);position:sticky;top:88px;height:max-content}
+    .section{margin-bottom:18px}
+    .section h2{margin:0 0 8px 0;font-size:18px}
+    .items{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+    .item{background:var(--glass);border-radius:10px;padding:10px;border:1px solid rgba(0,0,0,0.03);display:flex;gap:10px;align-items:center}
+    .thumb{width:96px;height:96px;border-radius:8px;background:#eee;flex-shrink:0;border:1px dashed #ddd;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#999;font-size:12px}
+    .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+    .meta{flex:1}
+    .meta h3{margin:0;font-size:15px}
+    .desc{color:var(--muted);font-size:13px;margin-top:6px}
+    .price-row{display:flex;justify-content:space-between;align-items:center;margin-top:8px;gap:8px}
+    .price{font-weight:700}
+    .small{font-size:12px;color:var(--muted)}
+    .cart-list{display:flex;flex-direction:column;gap:10px;max-height:480px;overflow:auto;padding-right:6px}
+    .cart-item{display:flex;gap:10px;align-items:center;justify-content:space-between;background:#fbfbfb;padding:8px;border-radius:8px;border:1px solid #f1f1f1}
+    .cart-item .title{font-weight:600}
+    .qty{display:flex;gap:6px;align-items:center}
+    .qty input{width:56px;padding:6px;border-radius:6px;border:1px solid #ddd;text-align:center}
+    .total{margin-top:12px;font-size:16px;font-weight:700;text-align:right}
+    .muted-block{font-size:13px;color:var(--muted);margin-top:8px}
+    footer{max-width:1200px;margin:26px auto;padding:18px;text-align:center;color:var(--muted)}
+    .badge{display:inline-block;padding:6px 8px;border-radius:6px;background:#fff;border:1px solid #e6f6f0;color:var(--accent-2);font-weight:700;font-size:12px}
+    .gf{background:#fff4e6;color:#b25b00;padding:4px 6px;border-radius:6px;font-weight:700;font-size:12px;border:1px solid #ffe6cc}
+    @media (max-width:520px){.thumb{width:72px;height:72px}.hero-right{display:none}}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="logo">AyS</div>
+    <div>
+      <h1>Alma y Sazón</h1>
+      <div class="sub">Restaurante inclusivo — Caucete</div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <input class="search" placeholder="Buscar plato (ej: empanada, vegana)" />
+    <button class="btn" id="open-cart">Carrito (<span id="cart-count">0</span>)</button>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="hero-left">
+      <h2>Menú amplio, inclusivo y para celíacos</h2>
+      <div class="categories">
+        <div class="cat">Desayunos</div>
+        <div class="cat">Almuerzos</div>
+        <div class="cat">Bebidas</div>
+        <div class="cat">Postres</div>
+        <div class="cat">Cenas</div>
+        <div class="cat">Sin TACC</div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="badge">Horario: 8:00 - 23:00</div>
+      <div style="height:12px"></div>
+      <div class="small muted-block">Profe: Cristian Ibaceta</div>
+      <div class="small">Integrantes: Matías Balmaceda, Juan Gallardo, Samuel Quiroga</div>
+    </div>
+  </section>
+
+  <div class="grid">
+    <div class="menu">
+
+      <!-- DESAYUNOS (8) -->
+      <div class="section" id="desayunos">
+        <h2>Desayunos</h2>
+        <div class="items">
+          <div class="item" data-id="d1" data-name="Desayuno Clásico" data-price="850">
+            <div class="thumb"><img src="images/desayuno-clasico.jpg" alt="Desayuno Clásico" onerror="this.style.display='none';this.parentNode.innerText='desayuno-clasico.jpg'"></div>
+            <div class="meta">
+              <h3>Desayuno Clásico</h3>
+              <div class="desc">Tostadas, mermelada, café o té.</div>
+              <div class="price-row"><div class="price">$850</div><button class="btn add-btn">Agregar</button></div>
+            </div>
+          </div>
+
+          <div class="item" data-id="d2" data-name="Desayuno Saludable" data-price="1000">
+            <div class="thumb"><img src="images/desayuno-saludable.jpg" alt="Desayuno Saludable" onerror="this.style.display='none';this.parentNode.innerText='desayuno-saludable.jpg'"></div>
+            <div class="meta">
+              <h3>Desayuno Saludable</h3>
+              <div class="desc">Avena, frutas, yogur vegetal.</div>
+              <div class="price-row"><div class="price">$1000</div><button class="btn add-btn">Agregar</button></div>
+            </div>
+          </div>
+
+          <div class="item" data-id="d3" data-name="Medialunas x2" data-price="420">
+            <div class="thumb"><img src="images/medialunas.jpg" alt="Medialunas" onerror="this.style.display='none';this.parentNode.innerText='medialunas.jpg'"></div>
+            <div class="meta">
+              <h3>Medialunas (x2)</h3>
+              <div class="desc">Dulces o saladas.</div>
+              <div class="price-row"><div class="price">$420</div><button class="btn add-btn">Agregar</button></div>
+            </div>
+          </div>
+
+          <div class="item" data-id="d4" data-name="Tostado mixto" data-price="600">
+            <div class="thumb"><img src="images/tostado.jpg" alt="Tostado Mixto" onerror="this.style.display='none';this.parentNode.innerText='tostado.jpg'"></div>
+            <div class="meta">
+              <h3>Tostado mixto</h3>
+              <div class="desc">Jamón, queso, pan a elección.</div>
+              <div class="price-row"><div class="price">$600</div><button class="btn add-btn">Agregar</button></div>
+            </div>
+          </div>
+
+          <div class="item" data-id="d5" data-name="Omelette" data-price="950">
+            <div class="thumb"><img src="images/omelette.jpg" alt="Omelette" onerror="this.style.display='none';this.parentNode.innerText='omelette.jpg'"></div>
+            <div class="meta">
+              <h3>Omelette</h3>
+              <div class="desc">Con queso y verduras.</div>
+              <div class="price-row"><div class="price">$950</div><button class="btn add-btn">Agregar</button></div>
+            </div>
+          </div>
+
+          <div class="item" data-id="d6" data-name="Pan sin TACC + mermelada" data-price="420" data-gf="true">
+            <div class="thumb"><img src="images/pan-sintacc-desayuno.jpg" alt="Pan sin TACC" onerror="this.style.display='none';this.parentNode.innerText='pan-sintacc-desayuno.jpg'"></div>
+            <div class="meta">
+              <h3>Pan sin TACC + mermelada</h3>
+              <div class="desc">Apto celíacos.</div>
+              <div class="price-row"><div class="price">$420</div><button class="btn add-btn">Agregar</button></div>
+            </div>
+          </div>
+
+          <div class="item" data-id="d7" data-name="Granola casera" data-price="720">
+            <div class="thumb"><img src="images/granola.jpg" alt="Granola" onerror="this.style.display='none';this.parentNode.innerText='granola.jpg'"></div>
+            <div class="meta">
+              <h3>Granola casera</h3>
+              <div class="desc">Con leche o bebida vegetal.</div>
+              <div class="price-row"><div class="price">$720</div><button class="btn add-btn">Agregar</button></div>
+            </div>
+          </div>
+
+          <div class="item" data-id="d8" data-name="Tabla de fiambres (individual)" data-price="1250">
+            <div class="thumb"><img src="images/tabla-fiambres.jpg" alt="Tabla" onerror="this.style.display='none';this.parentNode.innerText='tabla-fiambres.jpg'"></div>
+            <div class="meta">
+              <h3>Tabla de fiambres (individual)</h3>
+              <div class="desc">Quesos, jamón, aceitunas.</div>
+              <div class="price-row"><div class="price">$1250</div><button class="btn add-btn">Agregar</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ALMUERZOS (8) -->
+      <div class="section" id="almuerzos">
+        <h2>Almuerzos</h2>
+        <div class="items">
+          <div class="item" data-id="a1" data-name="Milanesa con guarnición" data-price="1900">
+            <div class="thumb"><img src="images/milanesa.jpg" alt="Milanesa" onerror="this.style.display='none';this.parentNode.innerText='milanesa.jpg'"></div>
+            <div class="meta">
+              <h3>Milanesa con guarnición</h3>
+              <div class="desc">Carne o soja + ensalada o papas.</div>
+              <div class="price-row"><div class="price">$1900</div><button class="btn add-btn">Agregar</button></div>
+            </div>
+          </div>
+
+          <div class="item" data-id="a2" data-name="Pastas caseras" data-price="1650">
+            <div class="thumb"><img src="images/pastas.jpg" alt="Pastas" onerror="this.style.display='none';this.parentNode.innerText='pastas.jpg'"></div>
+            <div class="meta">
+              <h3>Pastas caseras</h3>
+              <div class="desc">Ravioles, ñoquis o tallarines.</div>
+              <div class="price-row"><div class="price">$1650</div><button class="btn add-btn">Agregar</button></div>
+            </div>
+          </div>
+
+          <div class="item" data-id="a3" data-name="Guiso del día" data-price="1300">
+            <div class="thumb"><img src="images/guiso.jpg" alt="Guiso" onerror="this.style.display='none';this.parentNode.innerText='guiso.jpg'"></div>
+            <div class="meta">
+              <h3>Guiso del día</h3>
+              <div class="desc">Receta casera, porción abundante.</div>
+              <div class="price-row"><div class="price">$1300</div><button class="btn add-btn">Agregar</button></div>
+            </div>
+          </div>
+
+          <div class="item" data-id="a4" data-name="Lomo a la plancha" data-price="2200">
+            <div class="thumb"><img src="images/lomo.jpg" alt="Lomo" onerror="this.style.display='none';this.parentNode.innerText='lomo.jpg'"></div>
+            <div class="meta">
+              <h3>Lomo a la plancha</h3>
+              <div class="desc">Con papas y vegetales.</div>
+              <div class="price-row"><div class="price">$2200</div><button class="btn add-btn">Agregar</button></div>
+            </div>
+          </div>
+
+          <div class="item" data-id="a5" data-name="Hamburguesa casera" data-price="1500">
+            <div class="thumb"><img src="images/hamburguesa.jpg" alt="Hamburguesa" onerror="this.style.display='none';this.parentNode.innerText='hamburguesa.jpg'"></div>
+            <div class="meta">
+              <h3>Hamburguesa casera</h3>
+              <div class="desc">Carne o vegana, incluye papas.</div>
+              <div class="price-row"><div class="price">$1500</div><button class="btn add-btn">Agregar</button></div>
+            </div>
+          </div>
+
+          <div class="item" data-id="a6" data-name="Milanesa sin TACC" data-price="2200" data-gf="true">
+            <div class="thumb"><img src="images/milanesa-sintacc.jpg" alt="Milanesa sin TACC" onerror="this.style.display='none';this.parentNode.innerText='milanesa-sintacc.jpg'"></div>
+            <div class="meta">
+              <h3>Milanesa sin TACC</h3>
+              <div class="desc">Preparada en zona libre de gluten.</div>
+              <div class="price-row"><div class="price">$2200</div><button class="btn add-btn">Agregar</button></div>
+            </div>
+          </div>
+
+          <div class="item" data-id="a7" data-name="Ensalada grande" data-price="1250">
+            <div class="thumb"><img src="images/ensalada.jpg" alt="Ensalada" onerror="this.style.display='none';this.parentNode.innerText='ensalada.jpg'"></div>
+            <div class="meta">
+              <h3>Ensalada grande</h3>
+              <div class="desc">Variedad de vegetales y semillas.</div>
+              <div class="price-row"><div class="price">$1250</div><button class="btn add-btn">Agregar</button></div>
+            </div>
+          </div>
+
+          <div class="item" data-id="a8" data-name="Empanadas (x3)" data-price="700">
+            <div class="thumb"><img src="images/empanadas.jpg" alt="Empanadas" onerror="this.style.display='none';this.parentNode.innerText='empanadas.jpg'"></div>
+            <div class="meta">
+              <h3>Empanadas (x3)</h3>
+              <div class="desc">Carne, jamón y queso o veganas.</div>
+              <div class="price-row"><div class="price">$700</div><button class="btn add-btn">Agregar</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BEBIDAS (8) -->
+      <div class="section" id="bebidas">
+        <h2>Bebidas</h2>
+        <div class="items">
+          <div class="item" data-id="b1" data-name="Café (taza)" data-price="250">
+            <div class="thumb"><img src="images/cafe.jpg" alt="Cafe" onerror="this.style.display='none';this.parentNode.innerText='cafe.jpg'"></div>
+            <div class="meta">
+              <h3>Café (taza)</h3>
+              <div class="desc">Cortado, con leche o sin.</div>
+              <div class="price-row"><div class="price">$250</div><button class="btn add-btn">Agregar</button></div>
+            </div>
+          </div>
+
+          <div class="item" data-id="b2" data-name="Jugo natural" data-price="420">
+            <div class="thumb"><img src="images/jugo.jpg" alt="Jugo" onerror="this.style.display='none';this.parentNode.innerText='jugo.jpg'"></div>
+            <div class="meta">
+              <h3>Jugo natural</h3>
+              <div class="desc">Naranja, pomelo o mixto.</div>
+              <div class="price-row"><div class="price">$420</div><button class="btn add-btn">Agregar</button></div>
+            </div>
+          </div>
+
+          <div class="item" data-id="b3" data-name="Smoothie energético" data-price="720">
+            <div class="thumb"><img src="images/smoothie.jpg" alt="Smoothie" onerror="this.style.display='none';this.parentNode.innerText='smoothie.jpg'"></div>
+            <div class="meta">
+              <h3>Smoothie energético</h3>
+              <div class="desc">Frutas y proteína vegetal.</div>
+              <div class="price-row"><div class="price">$720</div><button class="btn add-btn">Agregar</button></div>
+            </div>
+          </div>
+
+          <div class="item" data-id="b4" data-name="Milkshake" data-price="650">
+            <div class="thumb"><img src="images/milkshake.jpg" alt="Milkshake" onerror="this.style.display='none';this.parentNode.innerText='milkshake.jpg'"></div>
+            <div class="meta">
+              <h3>Milkshake</h3>
+              <div class="desc">Vainilla, chocolate o frutilla.</div>
+              <div class="price-row"><div class="price">$650</div><button class="btn add-btn">Agregar</button></div>
+            </div>
+          </div>
+
+          <div class="item" data-id="b5" data-name="Limonada casera" data-price="380">
+            <div class="thumb"><img src="images/limonada.jpg" alt="Limonada" onerror="this.style.display='none';this.parentNode.innerText='limonada.jpg'"></div>
+            <div class="meta">
+              <h3>Limonada casera</h3>
+              <div class="desc">Hielo y menta fresca.</div>
+              <div class="price-row"><div class="price">$380</div><button class="btn add-btn">Agregar</button></div>
+            </div>
+          </div>
+
+          <div class="item" data-id="b6" data-name="Cerveza artesanal (botella)" data-price="650">
+            <div class="thumb"><img src="images/cerveza.jpg" alt="Cerveza" onerror="this.style.display='none';this.parentNode.innerText='cerveza.jpg'"></div>
+            <div class="meta">
+              <h3>Cerveza artesanal</h3>
+              <div class="desc">Variedad de estilos.</div>
+              <div class="price-row"><div class="price">$650</div><button class="btn add-btn">Agregar</button></div>
+            </div>
+          </div>
+
+          <div class="item" data-id="b7" data-name="Agua mineral (500ml)" data-price="200">
+            <div class="thumb"><img src="images/agua.jpg" alt="Agua" onerror="this.style.display='none';this.parentNode.innerText='agua.jpg'"></div>
+            <div class="meta">
+              <h3>Agua mineral (500ml)</h3>
+              <div class="desc">Con o sin gas.</div>
+              <div class="price-row"><div class="price">$200</div><button class="btn add-btn">Agregar</button></div>
+            </div>
+          </div>
+
+          <div class="item" data-id="b8" data-name="Té frío" data-price="300">
+            <div class="thumb"><img src="images/tefrio.jpg" alt="Té frío" onerror="this.style.display='none';this.parentNode.innerText='tefrio.jpg'"></div>
+            <div class="meta">
+              <h3>Té frío</h3>
+              <div class="desc">Sabores: durazno o limón.</div>
+              <div class="price-row"><div class="price">$300</div><button class="btn add-btn">Agregar</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+     <!-- POSTRES -->
+<div class="section" id="postres">
+    <h2>Postres</h2>
+    <div class="items">
+  
+      <!-- Flan casero -->
+      <div class="item" data-id="p1" data-name="Flan casero" data-price="480">
+        <div class="thumb">
+          <img src="images/flan.jpg" alt="Flan casero"
+               onerror="this.style.display='none'; this.parentNode.innerHTML='Imagen: flan.jpg'">
+        </div>
+        <div class="meta">
+          <h3>Flan casero</h3>
+          <div class="desc">Con dulce de leche o crema.</div>
+          <div class="price-row">
+            <div class="price">$480</div>
+            <button class="btn add" onclick="addToCart(this)">Agregar</button>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Brownie vegano -->
+      <div class="item" data-id="p2" data-name="Brownie (vegano)" data-price="520">
+        <div class="thumb">
+          <img src="images/brownie.jpg" alt="Brownie"
+               onerror="this.style.display='none'; this.parentNode.innerHTML='Imagen: brownie.jpg'">
+        </div>
+        <div class="meta">
+          <h3>Brownie (vegano)</h3>
+          <div class="desc">Chocolate intenso, sin productos animales.</div>
+          <div class="price-row">
+            <div class="price">$520</div>
+            <button class="btn add" onclick="addToCart(this)">Agregar</button>
+          </div>
+        </div>
+      </div>
+  
+  
+      <!-- NUEVOS POSTRES ------------------------ -->
+  
+      <!-- Cheesecake -->
+      <div class="item" data-id="p3" data-name="Cheesecake" data-price="700">
+        <div class="thumb">
+          <img src="images/cheesecake.jpg" alt="Cheesecake"
+               onerror="this.style.display='none'; this.parentNode.innerHTML='Imagen: cheesecake.jpg'">
+        </div>
+        <div class="meta">
+          <h3>Cheesecake</h3>
+          <div class="desc">Base de galleta y cobertura de frutos rojos.</div>
+          <div class="price-row">
+            <div class="price">$700</div>
+            <button class="btn add" onclick="addToCart(this)">Agregar</button>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Tiramisu -->
+      <div class="item" data-id="p4" data-name="Tiramisú" data-price="750">
+        <div class="thumb">
+          <img src="images/tiramisu.jpg" alt="Tiramisú"
+               onerror="this.style.display='none'; this.parentNode.innerHTML='Imagen: tiramisu.jpg'">
+        </div>
+        <div class="meta">
+          <h3>Tiramisú</h3>
+          <div class="desc">Clásico italiano con cacao y café.</div>
+          <div class="price-row">
+            <div class="price">$750</div>
+            <button class="btn add" onclick="addToCart(this)">Agregar</button>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Helado artesanal -->
+      <div class="item" data-id="p5" data-name="Helado artesanal" data-price="600">
+        <div class="thumb">
+          <img src="images/helado.jpg" alt="Helado artesanal"
+               onerror="this.style.display='none'; this.parentNode.innerHTML='Imagen: helado.jpg'">
+        </div>
+        <div class="meta">
+          <h3>Helado artesanal</h3>
+          <div class="desc">3 bochas: chocolate, vainilla, frutilla.</div>
+          <div class="price-row">
+            <div class="price">$600</div>
+            <button class="btn add" onclick="addToCart(this)">Agregar</button>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Budín de pan -->
+      <div class="item" data-id="p6" data-name="Budín de pan" data-price="450">
+        <div class="thumb">
+          <img src="images/budin-pan.jpg" alt="Budín de pan"
+               onerror="this.style.display='none'; this.parentNode.innerHTML='Imagen: budin-pan.jpg'">
+        </div>
+        <div class="meta">
+          <h3>Budín de pan</h3>
+          <div class="desc">Clásico argentino con caramelo.</div>
+          <div class="price-row">
+            <div class="price">$450</div>
+            <button class="btn add" onclick="addToCart(this)">Agregar</button>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Ensalada de frutas -->
+      <div class="item" data-id="p7" data-name="Ensalada de frutas" data-price="380">
+        <div class="thumb">
+          <img src="images/ensalada-frutas.jpg" alt="Ensalada de frutas"
+               onerror="this.style.display='none'; this.parentNode.innerHTML='Imagen: ensalada-frutas.jpg'">
+        </div>
+        <div class="meta">
+          <h3>Ensalada de frutas</h3>
+          <div class="desc">Frutas frescas de estación.</div>
+          <div class="price-row">
+            <div class="price">$380</div>
+            <button class="btn add" onclick="addToCart(this)">Agregar</button>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Mousse de chocolate -->
+      <div class="item" data-id="p8" data-name="Mousse de chocolate" data-price="680">
+        <div class="thumb">
+          <img src="images/mousse-choco.jpg" alt="Mousse de chocolate"
+               onerror="this.style.display='none'; this.parentNode.innerHTML='Imagen: mousse-choco.jpg'">
+        </div>
+        <div class="meta">
+          <h3>Mousse de chocolate</h3>
+          <div class="desc">Chocolate semiamargo y crema batida.</div>
+          <div class="price-row">
+            <div class="price">$680</div>
+            <button class="btn add" onclick="addToCart(this)">Agregar</button>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Lemon pie -->
+      <div class="item" data-id="p9" data-name="Lemon Pie" data-price="650">
+        <div class="thumb">
+          <img src="images/lemonpie.jpg" alt="Lemon Pie"
+               onerror="this.style.display='none'; this.parentNode.innerHTML='Imagen: lemonpie.jpg'">
+        </div>
+        <div class="meta">
+          <h3>Lemon Pie</h3>
+          <div class="desc">Crema de limón con merengue italiano.</div>
+          <div class="price-row">
+            <div class="price">$650</div>
+            <button class="btn add" onclick="addToCart(this)">Agregar</button>
+          </div>
+        </div>
+      </div>
+  
+    </div>
+  </div>
